@@ -1,0 +1,24 @@
+{
+    "users": {
+        "shubh": {
+            "password_hash": "c7f78f994c05a1cf66e410641b6822d5ad4eea2900b6816ff09770eb31498665",
+            "predictions": []
+        },
+        "SS": {
+            "password_hash": "d7cfa2ad5c3765a5c7ddda4d72feae7d6695df4425328692b258b3f7460f6bbc",
+            "predictions": []
+        },
+        "SSSSSSS": {
+            "password_hash": "2b136cdb5075fdb2b4ac8d7876c9ac75b521c6dbd1f453d7f049d472849daf96",
+            "predictions": []
+        },
+        "SSSSSSSASADSD": {
+            "password_hash": "2b136cdb5075fdb2b4ac8d7876c9ac75b521c6dbd1f453d7f049d472849daf96",
+            "predictions": []
+        },
+        "manya": {
+            "password_hash": "c7f78f994c05a1cf66e410641b6822d5ad4eea2900b6816ff09770eb31498665",
+            "predictions": []
+        }
+    }
+}

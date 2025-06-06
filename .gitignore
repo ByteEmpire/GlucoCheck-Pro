@@ -1,0 +1,116 @@
+# General development files
+.DS_Store
+*.swp
+*.swo
+*.bak
+*~
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Dependency directories
+node_modules/
+bower_components/
+jspm_packages/
+.pnp
+.pnp.js
+
+# Build and output directories
+dist/
+build/
+out/
+.next/
+.cache/
+
+# Debug logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Environment files
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+.env*.local
+
+# Testing coverage
+coverage/
+.nyc_output/
+
+# Production files
+.crashlytics
+.fabric
+
+# Mobile platform specific
+**/ios/DerivedData/
+**/ios/Pods/
+**/android/build/
+**/android/.gradle/
+**/android/local.properties
+**/android/app/build/
+
+# Firebase
+.firebase/
+firebase-debug.log
+
+# IDE specific
+*.iml
+
+# TypeScript
+*.tsbuildinfo
+
+# Python specific (if applicable)
+__pycache__/
+*.py[cod]
+*$py.class
+.Python
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# App specific files (customize these based on your project)
+# For example, if you have user uploads or local configs:
+uploads/
+config/local.json
+
+# Expo (if using React Native)
+.expo/
+.expo-shared/
+
+# macOS
+._*
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Linux
+.directory
+
+# Documentation
+docs/_build/
+
+# System Files
+.DS_Store
+Thumbs.db
+
+# Streamlit configuration and secrets
+.streamlit/secrets.toml
+.streamlit/config.toml
+__pycache__/
+*.py[cod]
