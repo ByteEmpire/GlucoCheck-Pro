@@ -17,13 +17,23 @@ from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
 from io import BytesIO
 import base64
-import uuid  # Added for unique key generation
+import uuid
+import shutil  # Added for file operations
 
 # --- Path Setup ---
 current_dir = os.path.dirname(__file__)
 auth_dir = os.path.join(current_dir, 'auth')
 if auth_dir not in sys.path:
     sys.path.append(auth_dir)
+
+# --- Clean up any existing confusion_matrix.html ---
+confusion_matrix_path = os.path.join(current_dir, "confusion_matrix.html")
+if os.path.exists(confusion_matrix_path):
+    try:
+        os.remove(confusion_matrix_path)
+        st.success(f"Removed existing confusion_matrix.html file")
+    except Exception as e:
+        st.warning(f"Could not remove confusion_matrix.html: {e}")
 
 # --- Authentication Imports ---
 try:
@@ -173,7 +183,6 @@ class AIDoctorAssistant:
             for model_name in model_options:
                 if model_name in available_models:
                     self.model = genai.GenerativeModel(model_name)
-                    st.success(f"Using model: {model_name}")
                     break
             else:
                 raise ValueError("No supported Gemini model available")
@@ -233,6 +242,14 @@ init_session_state()
 def load_model():
     model_path = os.path.join(current_dir, "model.pkl")
     scaler_path = os.path.join(current_dir, "scaler.pkl")
+
+    # Double check for confusion matrix file
+    confusion_matrix_path = os.path.join(current_dir, "confusion_matrix.html")
+    if os.path.exists(confusion_matrix_path):
+        try:
+            os.remove(confusion_matrix_path)
+        except Exception as e:
+            st.warning(f"Could not remove confusion_matrix.html during model load: {e}")
 
     model = None
     scaler = None
@@ -375,7 +392,7 @@ def generate_pdf_report(probability, recommendations, age, bmi, glucose, bp, ski
     # Title
     c.setFont("Helvetica-Bold", 24)
     c.setFillColor("#6C63FF")
-    c.drawString(50, height - 50, "GlucoCheck Pro+ Health Report")
+    c.drawString(50, height - 50, "PredectivEdge Health Report")
 
     # Date
     c.setFont("Helvetica", 12)
@@ -659,7 +676,6 @@ def medication_planner():
                         "title": f"{med['name']} ({med['dosage']})",
                         "color": colors[i % len(colors)],
                         "start": f"{event_date}T{start_time_str}",
-                        
                         "end": f"{event_date}T{end_time_str}"
                     })
         
@@ -698,7 +714,7 @@ def get_time_for_period(period, end=False):
 def app_main_content():
     col1, col2 = st.columns([1, 3])
     with col1:
-        st.image("https://i.imgur.com/JqYeZvn.png", width=120)
+        st.image("https://supergut-production.s3.amazonaws.com/uploads/finger_prick_animated_6c444158e0.jpg", width=120)
     with col2:
         st.title("GlucoCheck Pro+")
         st.caption("Advanced Diabetes Management with AI Assistance")
@@ -757,7 +773,7 @@ def app_main_content():
             st.download_button(
                 label="📥 Download Full Report (PDF)",
                 data=pdf_bytes,
-                file_name=f"glucocheck_report_{datetime.date.today()}.pdf",
+                file_name=f"diabetes_report_{datetime.date.today()}.pdf",
                 mime="application/pdf"
             )
 
@@ -895,19 +911,19 @@ def app_main_content():
                 card(
                     title="AI Health Assistant",
                     text="Get answers to your diabetes questions",
-                    image="https://i.imgur.com/JqYeZvn.png"
+                    image="https://engineering.tamu.edu/news/2018/_news-images/isen-news-diabetes-image-4june2018.jpg"
                 )
             with cols[1]:
                 card(
                     title="Medication Tracker",
                     text="Never miss a dose with smart reminders",
-                    image="https://i.imgur.com/vm6Wg8h.png"
+                    image="https://domf5oio6qrcr.cloudfront.net/medialibrary/11693/1a3d7208-475c-4cce-8787-d2ca822f28e7.jpg"
                 )
             with cols[2]:
                 card(
                     title="Health Timeline",
                     text="Track your progress over time",
-                    image="https://i.imgur.com/5XQZQ9u.png"
+                    image="https://vidhilegalpolicy.in/wp-content/uploads/2021/10/mental-health-wellness-during-covid-19.jpg"
                 )
 
             st.markdown("---")
@@ -987,7 +1003,7 @@ def main():
         # Landing Page for non-authenticated users
         col1, col2 = st.columns([1, 3])
         with col1:
-            st.image("https://i.imgur.com/JqYeZvn.png", width=120)
+            st.image("https://img.freepik.com/premium-photo/digital-glucometer-lancet-pen-sugar_262730-181.jpg?semt=ais_hybrid&w=740", width=120)
         with col2:
             st.title("GlucoCheck Pro+")
             st.caption("Advanced Diabetes Management Platform")
