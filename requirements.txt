@@ -1,17 +1,16 @@
 # Core Requirements
-tensorflow>=2.16.0
-pandas>=2.2.0
 streamlit==1.29.0
-numpy==1.26.2
+pandas==2.2.2
+numpy==1.26.4
 plotly==5.18.0
 matplotlib==3.8.2
-python-3.11.8
 
 # Machine Learning & Data Processing
-scikit-learn==1.3.2
-keras==2.15.0
+scikit-learn==1.5.0
+tensorflow==2.16.2
+keras==3.3.3
 xgboost==2.0.3
-joblib==1.3.2
+joblib==1.4.2
 
 # PDF/Excel Processing
 openpyxl==3.1.2
@@ -19,12 +18,12 @@ pypdf2==3.0.1
 pdfplumber==0.10.3
 
 # Utilities
-python-dateutil==2.8.2
-pydantic==2.5.2
-typing-extensions==4.8.0
-tqdm==4.66.1
+python-dateutil==2.9.0.post0
+pydantic==2.8.2
+typing-extensions==4.12.2
+tqdm==4.66.4
 
 # Dev/Testing 
-pytest==7.4.3
-black==23.11.0
-flake8==6.1.0
+pytest==8.3.2
+black==24.3.0
+flake8==7.1.0
