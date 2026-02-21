@@ -84,107 +84,222 @@ for level, message in startup_notices:
 def inject_css():
     st.markdown("""
     <style>
-    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
-    
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
     :root {
         --primary: #6C63FF;
         --secondary: #4D44DB;
         --danger: #FF6B6B;
         --success: #4CAF50;
         --warning: #FFC107;
+        --dark: #1a1a2e;
     }
-    
-    * {
+
+    html, body, [class*="css"] {
         font-family: 'Poppins', sans-serif;
     }
-    
-    .main {
-        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+
+    .block-container {
+        padding-top: 1.5rem !important;
+        padding-bottom: 2rem !important;
     }
-    
-    .stButton>button {
-        background: var(--primary);
-        color: white;
-        border: none;
-        padding: 12px 28px;
-        border-radius: 50px;
-        font-weight: 600;
-        transition: all 0.3s;
-        box-shadow: 0 4px 6px rgba(108, 99, 255, 0.2);
+
+    /* ── Buttons ── */
+    .stButton > button {
+        background: linear-gradient(135deg, #6C63FF, #4D44DB) !important;
+        color: white !important;
+        border: none !important;
+        padding: 10px 26px !important;
+        border-radius: 50px !important;
+        font-weight: 600 !important;
+        transition: all 0.3s ease !important;
+        box-shadow: 0 4px 14px rgba(108, 99, 255, 0.35) !important;
     }
-    
-    .sidebar .sidebar-content {
-        background: white;
-        box-shadow: 5px 0 15px rgba(0,0,0,0.05);
+    .stButton > button:hover {
+        transform: translateY(-2px) !important;
+        box-shadow: 0 6px 20px rgba(108, 99, 255, 0.5) !important;
     }
-    
+
+    /* ── Risk cards ── */
     .risk-card {
         border-radius: 12px;
         padding: 20px;
         box-shadow: 0 4px 20px rgba(0,0,0,0.08);
         border-left: 5px solid var(--primary);
+        background: white;
         transition: all 0.3s;
     }
-    
-    .chat-container {
-        background-color: transparent;
-        border-radius: 12px;
-        padding: 15px;
-        margin-bottom: 20px;
+
+    /* ── Hero section ── */
+    .hero-section {
+        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+        border-radius: 20px;
+        padding: 64px 50px 56px;
+        margin-bottom: 32px;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
     }
-    
+    .hero-section::before {
+        content: '';
+        position: absolute;
+        top: -40%;
+        left: -20%;
+        width: 160%;
+        height: 160%;
+        background: radial-gradient(circle at 60% 40%, rgba(108,99,255,0.18) 0%, transparent 55%);
+        pointer-events: none;
+    }
+    .hero-badge {
+        display: inline-block;
+        background: rgba(108,99,255,0.25);
+        border: 1px solid rgba(108,99,255,0.5);
+        color: #c4c0ff;
+        padding: 5px 18px;
+        border-radius: 50px;
+        font-size: 0.82rem;
+        font-weight: 500;
+        margin-bottom: 18px;
+        letter-spacing: 0.8px;
+        text-transform: uppercase;
+    }
+    .hero-title {
+        font-size: 3rem;
+        font-weight: 700;
+        color: #ffffff;
+        margin: 0 0 14px;
+        line-height: 1.15;
+        text-shadow: 0 2px 12px rgba(0,0,0,0.4);
+    }
+    .hero-title span {
+        background: linear-gradient(90deg, #a78bfa, #818cf8);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+    .hero-subtitle {
+        font-size: 1.1rem;
+        color: rgba(255,255,255,0.7);
+        margin-bottom: 36px;
+        font-weight: 300;
+        max-width: 560px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    .hero-features {
+        display: flex;
+        justify-content: center;
+        gap: 28px;
+        flex-wrap: wrap;
+        margin-top: 20px;
+    }
+    .hero-feature-pill {
+        background: rgba(255,255,255,0.08);
+        border: 1px solid rgba(255,255,255,0.15);
+        color: rgba(255,255,255,0.85);
+        padding: 8px 20px;
+        border-radius: 50px;
+        font-size: 0.88rem;
+        font-weight: 500;
+    }
+
+    /* ── Stats bar ── */
+    .stats-bar {
+        background: linear-gradient(135deg, #6C63FF 0%, #4D44DB 100%);
+        border-radius: 16px;
+        padding: 28px 20px;
+        margin: 0 0 32px;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 20px;
+    }
+    .stat-item { text-align: center; }
+    .stat-number { font-size: 2rem; font-weight: 700; color: #fff; display: block; }
+    .stat-label  { font-size: 0.78rem; color: rgba(255,255,255,0.7); letter-spacing: 0.5px; }
+
+    /* ── Feature cards ── */
+    .feature-card {
+        background: #ffffff;
+        border-radius: 16px;
+        padding: 28px 22px;
+        box-shadow: 0 4px 24px rgba(0,0,0,0.07);
+        border-top: 4px solid;
+        transition: transform 0.25s ease, box-shadow 0.25s ease;
+        text-align: center;
+        height: 100%;
+    }
+    .feature-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 14px 38px rgba(0,0,0,0.12);
+    }
+    .feature-icon { font-size: 2.4rem; margin-bottom: 12px; display: block; }
+    .feature-card h3 { font-size: 1.05rem; font-weight: 600; color: #1a1a2e; margin-bottom: 8px; }
+    .feature-card p  { font-size: 0.88rem; color: #666; line-height: 1.55; margin: 0; }
+
+    /* ── How it works steps ── */
+    .step-card {
+        background: linear-gradient(135deg, #f5f3ff, #ede9fe);
+        border-radius: 14px;
+        padding: 24px 18px;
+        text-align: center;
+        border: 1px solid rgba(108,99,255,0.12);
+    }
+    .step-number { font-size: 2.2rem; font-weight: 700; color: #6C63FF; display: block; margin-bottom: 6px; }
+    .step-card h4 { font-size: 0.98rem; font-weight: 600; color: #1a1a2e; margin-bottom: 5px; }
+    .step-card p  { font-size: 0.84rem; color: #555; margin: 0; }
+
+    /* ── Section header ── */
+    .section-header { text-align: center; margin: 38px 0 26px; }
+    .section-header h2 { font-size: 1.75rem; font-weight: 700; color: #1a1a2e; margin-bottom: 6px; }
+    .section-header p  { color: #666; font-size: 0.93rem; margin: 0; }
+    .section-divider {
+        width: 48px; height: 4px;
+        background: linear-gradient(90deg, #6C63FF, #4D44DB);
+        border-radius: 2px;
+        margin: 8px auto 0;
+    }
+
+    /* ── Chat bubbles ── */
+    .chat-container {
+        background: #f8f7ff;
+        border-radius: 14px;
+        padding: 16px;
+        margin-bottom: 16px;
+        max-height: 420px;
+        overflow-y: auto;
+        border: 1px solid rgba(108,99,255,0.1);
+    }
     .user-message {
-        background-color: #6C63FF;
+        background: linear-gradient(135deg, #6C63FF, #4D44DB);
         color: white;
         border-radius: 18px 18px 0 18px;
         padding: 12px 16px;
         margin: 8px 0 8px auto;
         max-width: 80%;
         word-wrap: break-word;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        box-shadow: 0 2px 8px rgba(108,99,255,0.3);
+        display: block;
     }
-    
     .ai-message {
-        background-color: #f0f2f6;
+        background: white;
         color: #333;
         border-radius: 18px 18px 18px 0;
         padding: 12px 16px;
         margin: 8px auto 8px 0;
         max-width: 80%;
         word-wrap: break-word;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+        border: 1px solid rgba(0,0,0,0.06);
+        display: block;
     }
-    
-    .message-timestamp {
-        font-size: 0.7em;
-        opacity: 0.8;
-        margin-top: 4px;
-    }
-    
-    .medication-card {
-        border-left: 4px solid #6C63FF;
-        padding: 15px;
-        margin-bottom: 15px;
-        border-radius: 8px;
-        background: white;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    }
-    
-    @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(10px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
-    
-    .fade-in {
-        animation: fadeIn 0.6s ease-out;
-    }
+    .message-timestamp { font-size: 0.68em; opacity: 0.65; margin-top: 4px; }
 
-    .chat-input-row {
-        display: flex;
-        gap: 10px;
-        align-items: flex-end;
-        margin-top: 10px;
+    @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(16px); }
+        to   { opacity: 1; transform: translateY(0); }
     }
+    .fade-in { animation: fadeInUp 0.5s ease-out; }
     </style>
     """, unsafe_allow_html=True)
 
@@ -1051,21 +1166,100 @@ def main():
                 else:
                     st.sidebar.error("Invalid credentials")
 
-        # Landing Page for non-authenticated users
-        col1, col2 = st.columns([1, 3])
-        with col1:
-            st.image("https://img.freepik.com/premium-photo/digital-glucometer-lancet-pen-sugar_262730-181.jpg?semt=ais_hybrid&w=740", width=120)
-        with col2:
-            st.title("GlucoCheck Pro+")
-            st.caption("Advanced Diabetes Management Platform")
-
-        st.markdown("---")
-        st.header("Please login or register to access all features")
+        # ── Beautiful Landing Page for non-authenticated users ──
         st.markdown("""
-        - 🔒 Secure user accounts
-        - 📈 Personalized health tracking
-        - 🏆 Premium features after login
-        """)
+        <div class="hero-section fade-in">
+            <div class="hero-badge">🏥 Advanced Diabetes Management</div>
+            <h1 class="hero-title">GlucoCheck <span>Pro+</span></h1>
+            <p class="hero-subtitle">
+                AI-powered risk assessment, personalised health plans, and smart medication
+                tracking — all in one platform built for people managing diabetes.
+            </p>
+            <div class="hero-features">
+                <span class="hero-feature-pill">🎯 AI Risk Assessment</span>
+                <span class="hero-feature-pill">🩺 Virtual Specialist</span>
+                <span class="hero-feature-pill">💊 Medication Tracker</span>
+                <span class="hero-feature-pill">📈 Health Timeline</span>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+
+        # Stats bar
+        st.markdown("""
+        <div class="stats-bar">
+            <div class="stat-item">
+                <span class="stat-number">95%</span>
+                <span class="stat-label">MODEL ACCURACY</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number">5</span>
+                <span class="stat-label">RISK TIERS</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number">AI</span>
+                <span class="stat-label">POWERED CHAT</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number">PDF</span>
+                <span class="stat-label">HEALTH REPORTS</span>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+
+        # Feature cards
+        st.markdown("""
+        <div class="section-header">
+            <h2>Everything You Need</h2>
+            <p>Comprehensive tools to monitor and manage your diabetes risk</p>
+            <div class="section-divider"></div>
+        </div>
+        """, unsafe_allow_html=True)
+
+        fc1, fc2, fc3, fc4 = st.columns(4)
+        features = [
+            ("#6C63FF", "🎯", "Risk Assessment", "Enter your health metrics and get an instant AI-powered diabetes risk score with personalised recommendations."),
+            ("#FF6B6B", "🩺", "AI Doctor Chat", "Chat with our Gemini-powered virtual diabetes specialist and get evidence-based answers to your questions."),
+            ("#4CAF50", "💊", "Medication Planner", "Track all your medications with a smart calendar view and never miss a dose again."),
+            ("#FFC107", "📈", "Health Timeline", "Visualise your risk scores over time and see the impact of your lifestyle changes."),
+        ]
+        for col, (color, icon, title, desc) in zip([fc1, fc2, fc3, fc4], features):
+            with col:
+                st.markdown(f"""
+                <div class="feature-card" style="border-top-color: {color};">
+                    <span class="feature-icon">{icon}</span>
+                    <h3>{title}</h3>
+                    <p>{desc}</p>
+                </div>
+                """, unsafe_allow_html=True)
+
+        st.markdown("<br>", unsafe_allow_html=True)
+
+        # How it works
+        st.markdown("""
+        <div class="section-header">
+            <h2>How It Works</h2>
+            <p>Three simple steps to better diabetes management</p>
+            <div class="section-divider"></div>
+        </div>
+        """, unsafe_allow_html=True)
+
+        s1, s2, s3 = st.columns(3)
+        for col, num, title, desc in [
+            (s1, "1", "Create Your Account", "Register for free in seconds using the sidebar. Your data stays private and secure."),
+            (s2, "2", "Enter Health Metrics", "Input your glucose, BMI, blood pressure and other vitals into the sidebar form."),
+            (s3, "3", "Get Your Report", "Receive a personalised risk score, recommendations, and a downloadable PDF report."),
+        ]:
+            with col:
+                st.markdown(f"""
+                <div class="step-card">
+                    <span class="step-number">0{num}</span>
+                    <h4>{title}</h4>
+                    <p>{desc}</p>
+                </div>
+                """, unsafe_allow_html=True)
+
+        st.markdown("<br>", unsafe_allow_html=True)
+        st.info("👈 **Login or Register** using the sidebar to unlock all features.")
 
 if __name__ == "__main__":
     main()
