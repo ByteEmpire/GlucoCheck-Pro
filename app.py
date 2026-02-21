@@ -104,6 +104,135 @@ def inject_css():
         padding-bottom: 2rem !important;
     }
 
+    /* ── Sidebar dark theme ── */
+    [data-testid="stSidebar"] {
+        background: linear-gradient(180deg, #1a1a2e 0%, #16213e 60%, #0f3460 100%) !important;
+        border-right: 1px solid rgba(108,99,255,0.25) !important;
+    }
+    [data-testid="stSidebar"] * {
+        color: rgba(255,255,255,0.88) !important;
+    }
+    /* Sidebar inputs */
+    [data-testid="stSidebar"] input {
+        background: rgba(255,255,255,0.07) !important;
+        border: 1px solid rgba(108,99,255,0.4) !important;
+        border-radius: 10px !important;
+        color: white !important;
+        padding: 10px 14px !important;
+    }
+    [data-testid="stSidebar"] input:focus {
+        border-color: #6C63FF !important;
+        box-shadow: 0 0 0 3px rgba(108,99,255,0.2) !important;
+    }
+    [data-testid="stSidebar"] input::placeholder {
+        color: rgba(255,255,255,0.35) !important;
+    }
+    /* Sidebar labels */
+    [data-testid="stSidebar"] label,
+    [data-testid="stSidebar"] .stRadio label {
+        color: rgba(255,255,255,0.75) !important;
+        font-size: 0.88rem !important;
+        font-weight: 500 !important;
+    }
+    /* Sidebar radio */
+    [data-testid="stSidebar"] [data-testid="stRadio"] > div {
+        gap: 6px !important;
+    }
+    [data-testid="stSidebar"] [data-baseweb="radio"] span:last-child {
+        color: rgba(255,255,255,0.82) !important;
+    }
+    /* Sidebar button */
+    [data-testid="stSidebar"] .stButton > button {
+        width: 100% !important;
+        background: linear-gradient(135deg, #6C63FF, #4D44DB) !important;
+        color: white !important;
+        border: none !important;
+        border-radius: 12px !important;
+        padding: 12px !important;
+        font-size: 0.95rem !important;
+        font-weight: 600 !important;
+        margin-top: 8px !important;
+        box-shadow: 0 4px 16px rgba(108,99,255,0.4) !important;
+        transition: all 0.3s !important;
+    }
+    [data-testid="stSidebar"] .stButton > button:hover {
+        transform: translateY(-2px) !important;
+        box-shadow: 0 8px 24px rgba(108,99,255,0.55) !important;
+    }
+    /* Sidebar dividers and hr */
+    [data-testid="stSidebar"] hr {
+        border-color: rgba(108,99,255,0.25) !important;
+        margin: 16px 0 !important;
+    }
+    /* Sidebar success/error messages */
+    [data-testid="stSidebar"] [data-testid="stAlert"] {
+        background: rgba(255,255,255,0.06) !important;
+        border-radius: 10px !important;
+        border: 1px solid rgba(255,255,255,0.12) !important;
+    }
+    /* Hide default sidebar top padding */
+    [data-testid="stSidebar"] > div:first-child {
+        padding-top: 1.2rem !important;
+    }
+    /* Sidebar markdown text */
+    [data-testid="stSidebar"] p,
+    [data-testid="stSidebar"] h1,
+    [data-testid="stSidebar"] h2,
+    [data-testid="stSidebar"] h3 {
+        color: white !important;
+    }
+    /* Sidebar logo/branding card */
+    .sidebar-brand {
+        background: rgba(108,99,255,0.15);
+        border: 1px solid rgba(108,99,255,0.3);
+        border-radius: 14px;
+        padding: 18px 16px 14px;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+    .sidebar-brand .brand-icon { font-size: 2.4rem; display: block; margin-bottom: 6px; }
+    .sidebar-brand .brand-name {
+        font-size: 1.2rem; font-weight: 700;
+        color: white; display: block; margin-bottom: 2px;
+    }
+    .sidebar-brand .brand-tag {
+        font-size: 0.72rem; color: rgba(255,255,255,0.5);
+        letter-spacing: 1px; text-transform: uppercase;
+    }
+    /* Auth tab switcher */
+    .auth-tab-row {
+        display: flex;
+        background: rgba(255,255,255,0.06);
+        border-radius: 12px;
+        padding: 4px;
+        margin-bottom: 20px;
+        gap: 4px;
+    }
+    .auth-tab {
+        flex: 1;
+        text-align: center;
+        padding: 8px 0;
+        border-radius: 9px;
+        font-size: 0.87rem;
+        font-weight: 600;
+        color: rgba(255,255,255,0.5);
+        cursor: default;
+    }
+    .auth-tab.active {
+        background: linear-gradient(135deg, #6C63FF, #4D44DB);
+        color: white;
+        box-shadow: 0 3px 10px rgba(108,99,255,0.4);
+    }
+    .auth-section-label {
+        font-size: 0.78rem;
+        font-weight: 600;
+        color: rgba(255,255,255,0.45) !important;
+        text-transform: uppercase;
+        letter-spacing: 1.2px;
+        margin-bottom: 4px;
+        display: block;
+    }
+
     /* ── Buttons ── */
     .stButton > button {
         background: linear-gradient(135deg, #6C63FF, #4D44DB) !important;
@@ -1133,38 +1262,71 @@ def main():
     if st.session_state.username:
         app_main_content()
     else:
-        # Authentication UI
-        st.sidebar.header("Authentication")
-        auth_option = st.sidebar.radio("Choose an option", ["Login", "Register"])
+        # ── Branded Sidebar ──
+        st.sidebar.markdown("""
+        <div class="sidebar-brand">
+            <span class="brand-icon">🏥</span>
+            <span class="brand-name">GlucoCheck Pro+</span>
+            <span class="brand-tag">Diabetes Management</span>
+        </div>
+        """, unsafe_allow_html=True)
+
+        auth_option = st.sidebar.radio(
+            "Choose an option",
+            ["Login", "Register"],
+            horizontal=False,
+            label_visibility="collapsed"
+        )
+
+        # Show active tab indicator
+        login_active  = "active" if auth_option == "Login"    else ""
+        reg_active    = "active" if auth_option == "Register" else ""
+        st.sidebar.markdown(f"""
+        <div class="auth-tab-row">
+            <div class="auth-tab {login_active}">🔑 Login</div>
+            <div class="auth-tab {reg_active}">✨ Register</div>
+        </div>
+        """, unsafe_allow_html=True)
 
         if auth_option == "Register":
-            st.sidebar.subheader("New User Registration")
-            new_username = st.sidebar.text_input("New Username", key="reg_username")
-            new_password = st.sidebar.text_input("New Password", type="password", key="reg_password")
-            confirm_password = st.sidebar.text_input("Confirm Password", type="password", key="reg_confirm_password")
+            st.sidebar.markdown('<span class="auth-section-label">Create your account</span>', unsafe_allow_html=True)
+            new_username     = st.sidebar.text_input("Username",         placeholder="Choose a username",  key="reg_username")
+            new_password     = st.sidebar.text_input("Password",         placeholder="Create a password",  type="password", key="reg_password")
+            confirm_password = st.sidebar.text_input("Confirm Password", placeholder="Repeat password",    type="password", key="reg_confirm_password")
 
-            if st.sidebar.button("Register Account"):
-                if new_password == confirm_password:
-                    if register_user(new_username, new_password):
-                        st.sidebar.success("Registration successful! Please log in.")
-                    else:
-                        st.sidebar.error("Username already exists")
-                else:
+            if st.sidebar.button("✨ Create Account"):
+                if not new_username or not new_password:
+                    st.sidebar.error("Please fill in all fields")
+                elif new_password != confirm_password:
                     st.sidebar.error("Passwords don't match")
+                else:
+                    if register_user(new_username, new_password):
+                        st.sidebar.success("Account created! Please log in.")
+                    else:
+                        st.sidebar.error("Username already taken")
         else:
-            st.sidebar.subheader("User Login")
-            username = st.sidebar.text_input("Username", key="login_username")
-            password = st.sidebar.text_input("Password", type="password", key="login_password")
+            st.sidebar.markdown('<span class="auth-section-label">Sign in to your account</span>', unsafe_allow_html=True)
+            username = st.sidebar.text_input("Username", placeholder="Enter your username", key="login_username")
+            password = st.sidebar.text_input("Password", placeholder="Enter your password", type="password", key="login_password")
 
-            if st.sidebar.button("Login"):
+            if st.sidebar.button("🔑 Login"):
                 if verify_user(username, password):
-                    st.session_state.token = generate_token(username)
+                    st.session_state.token    = generate_token(username)
                     st.session_state.username = username
-                    st.sidebar.success("Logged in successfully!")
+                    st.sidebar.success(f"Welcome back, {username}! 👋")
                     time.sleep(0.5)
                     st.rerun()
                 else:
-                    st.sidebar.error("Invalid credentials")
+                    st.sidebar.error("Invalid username or password")
+
+        st.sidebar.markdown("---")
+        st.sidebar.markdown("""
+        <div style="text-align:center; padding: 8px 0;">
+            <span style="font-size:0.75rem; color:rgba(255,255,255,0.35); letter-spacing:0.5px;">
+                🔒 Your data is private & secure
+            </span>
+        </div>
+        """, unsafe_allow_html=True)
 
         # ── Beautiful Landing Page for non-authenticated users ──
         st.markdown("""
