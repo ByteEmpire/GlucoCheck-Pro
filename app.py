@@ -194,34 +194,42 @@ inject_css()
 # --- AI Doctor Chat Class ---
 class AIDoctorAssistant:
     def __init__(self):
+        self.model = None
+        self.init_error = None
+
+        api_key = st.secrets.get("GEMINI_API_KEY") or os.getenv("GEMINI_API_KEY")
+        if not api_key:
+            self.init_error = "Missing GEMINI_API_KEY in Streamlit secrets or environment."
+            return
+
         try:
-            genai.configure(api_key=st.secrets["GEMINI_API_KEY"])
-            
+            genai.configure(api_key=api_key)
+
             model_options = [
                 'models/gemini-1.5-flash',
                 'models/gemini-1.5-flash-latest',
                 'models/gemini-pro',
                 'models/gemini-pro-vision'
             ]
-            
-            available_models = [m.name for m in genai.list_models() 
-                              if 'generateContent' in m.supported_generation_methods]
-            
+
+            available_models = [
+                m.name for m in genai.list_models()
+                if 'generateContent' in m.supported_generation_methods
+            ]
+
             for model_name in model_options:
                 if model_name in available_models:
                     self.model = genai.GenerativeModel(model_name)
                     break
-            else:
-                raise ValueError("No supported Gemini model available")
-                
+
+            if self.model is None:
+                self.init_error = "No supported Gemini model available."
+
         except Exception as e:
-            st.error(f"Failed to initialize Gemini: {e}")
-            self.model = None
-        
-        self.system_prompt = """You are a friendly and knowledgeable diabetes specialist AI assistant. 
-        Provide accurate, evidence-based information about diabetes prevention, management, and treatment.
-        Be empathetic and supportive in your responses. If a question is outside your scope or requires 
-        medical attention, advise consulting a healthcare professional."""
+            self.init_error = f"Failed to initialize Gemini: {e}"
+
+        self.system_prompt = """You are a friendly and knowledgeable diabetes specialist AI assistant.
+Provide accurate, evidence-based information and advise consulting a healthcare professional."""
 
     def generate_response(self, user_query, context=""):
         if not self.model:
@@ -243,9 +251,9 @@ class AIDoctorAssistant:
                 }
             )
             return response.text
-        except Exception as e:
-            st.error(f"Gemini Error: {str(e)}")
-            return "I'm having trouble responding. Please try again later."
+        except Exception:
+            # ✅ FIX 1: return was under-indented (was at 4 spaces, needs 12)
+            return "I'm having trouble responding right now. Please try again later."
 
 # --- Session State Initialization ---
 def init_session_state():
@@ -496,7 +504,15 @@ def ai_doctor_chat():
     st.header("🩺 AI Diabetes Specialist")
     st.caption("Get answers to your diabetes-related questions (not a substitute for medical advice)")
     
-    assistant = AIDoctorAssistant()
+    if "ai_assistant" not in st.session_state:
+        # ✅ FIX 2: this line was not indented under the if block (was at 4 spaces, needs 8)
+        st.session_state.ai_assistant = AIDoctorAssistant()
+
+    # ✅ FIX 3: these two lines had incorrect/inconsistent indentation
+    assistant = st.session_state.ai_assistant
+
+    if assistant.init_error:
+        st.warning(f"AI Doctor unavailable: {assistant.init_error}")
     
     # Chat history display
     chat_html = "<div class='chat-container'>"
