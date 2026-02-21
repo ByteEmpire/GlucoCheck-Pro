@@ -32,3 +32,6 @@ tqdm==4.66.4
 pytest==8.3.2
 black==24.3.0
 flake8==7.1.0
+
+PyJWT==2.8.0
+seaborn==0.13.2
