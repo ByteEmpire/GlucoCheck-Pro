@@ -20,7 +20,7 @@
   Your data stays with you — local processing with encryption.
 
 - 📁 **PDF/Excel Lab Uploads**  
-  Quickly import reports for in-depth analysis and predictions.
+  Quickly import reports for in-depth analysis and prediction.
 
 ---
 
