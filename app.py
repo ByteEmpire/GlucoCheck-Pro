@@ -54,28 +54,20 @@ try:
     )
 except ImportError:
     startup_notices.append(("error", "Authentication utilities not found. Some features may be limited."))
-    # Dummy functions to prevent crashes
     def initialize_user_db():
         pass
-
     def hash_password(p):
         return p
-
     def register_user(u, p):
         return False
-
     def verify_user(u, p):
         return False
-
     def generate_token(u):
         return "dummy_token"
-
     def verify_token(t):
         return None
-
     def update_password(u, p):
         return False
-
     def delete_user(u):
         return False
 
@@ -186,6 +178,13 @@ def inject_css():
     .fade-in {
         animation: fadeIn 0.6s ease-out;
     }
+
+    .chat-input-row {
+        display: flex;
+        gap: 10px;
+        align-items: flex-end;
+        margin-top: 10px;
+    }
     </style>
     """, unsafe_allow_html=True)
 
@@ -252,7 +251,6 @@ Provide accurate, evidence-based information and advise consulting a healthcare 
             )
             return response.text
         except Exception:
-            # ✅ FIX 1: return was under-indented (was at 4 spaces, needs 12)
             return "I'm having trouble responding right now. Please try again later."
 
 # --- Session State Initialization ---
@@ -269,6 +267,9 @@ def init_session_state():
         st.session_state.health_history = []
     if 'last_assessment' not in st.session_state:
         st.session_state.last_assessment = None
+    # ✅ FIX: Added session state for chat input text
+    if 'chat_input_text' not in st.session_state:
+        st.session_state.chat_input_text = ""
 
 init_session_state()
 
@@ -278,7 +279,6 @@ def load_model():
     model_path = os.path.join(current_dir, "model.pkl")
     scaler_path = os.path.join(current_dir, "scaler.pkl")
 
-    # Double check for confusion matrix file
     confusion_matrix_path = os.path.join(current_dir, "confusion_matrix.html")
     if os.path.exists(confusion_matrix_path):
         try:
@@ -316,7 +316,6 @@ def get_personalized_recommendations(probability, bmi, age):
     bmi_category = ""
     age_group = ""
 
-    # Determine age group
     if age < 18:
         age_group = "child/teen"
     elif 18 <= age <= 60:
@@ -324,7 +323,6 @@ def get_personalized_recommendations(probability, bmi, age):
     else:
         age_group = "senior"
 
-    # Determine BMI category
     if bmi < 18.5:
         bmi_category = "Underweight"
     elif 18.5 <= bmi < 24.9:
@@ -382,7 +380,6 @@ def get_personalized_recommendations(probability, bmi, age):
     }
 
 def create_gauge(probability, color):
-    """Create risk gauge visualization"""
     fig = go.Figure(go.Indicator(
         mode="gauge+number",
         value=probability * 100,
@@ -410,7 +407,6 @@ def create_gauge(probability, color):
     return fig
 
 def risk_card(title, value, color, icon):
-    """Create styled risk card"""
     st.markdown(f"""
     <div class="risk-card" style="border-left: 5px solid {color};">
         <h3 style="color: {color}; margin-top: 0; margin-bottom: 10px;">{icon} {title}</h3>
@@ -419,22 +415,18 @@ def risk_card(title, value, color, icon):
     """, unsafe_allow_html=True)
 
 def generate_pdf_report(probability, recommendations, age, bmi, glucose, bp, skin_thickness, insulin, pedigree, pregnancies):
-    """Generate PDF health report"""
     buffer = BytesIO()
     c = canvas.Canvas(buffer, pagesize=letter)
     width, height = letter
 
-    # Title
     c.setFont("Helvetica-Bold", 24)
     c.setFillColor("#6C63FF")
-    c.drawString(50, height - 50, "PredectivEdge Health Report")
+    c.drawString(50, height - 50, "GlucoCheck Pro+ Health Report")
 
-    # Date
     c.setFont("Helvetica", 12)
     c.setFillColor("gray")
     c.drawString(50, height - 70, f"Date: {datetime.date.today().strftime('%Y-%m-%d')}")
 
-    # Patient Information
     y_pos = height - 120
     c.setFont("Helvetica-Bold", 14)
     c.setFillColor("black")
@@ -449,7 +441,6 @@ def generate_pdf_report(probability, recommendations, age, bmi, glucose, bp, ski
     c.drawString(70, y_pos - 140, f"Diabetes Pedigree Function: {pedigree:.3f}")
     c.drawString(70, y_pos - 160, f"Pregnancies: {pregnancies}")
 
-    # Risk Assessment
     y_pos = y_pos - 200
     c.setFont("Helvetica-Bold", 14)
     c.drawString(50, y_pos, "Diabetes Risk Assessment:")
@@ -459,7 +450,6 @@ def generate_pdf_report(probability, recommendations, age, bmi, glucose, bp, ski
     c.drawString(70, y_pos - 40, f"Overall Risk Level: {recommendations['risk_level']}")
     c.setFillColor("black")
 
-    # Recommendations
     y_pos = y_pos - 80
     c.setFont("Helvetica-Bold", 14)
     c.drawString(50, y_pos, "Personalized Recommendations:")
@@ -488,7 +478,6 @@ def generate_pdf_report(probability, recommendations, age, bmi, glucose, bp, ski
         y_pos -= 15
         c.drawString(80, y_pos, f"- {item}")
     
-    # Footer
     c.setFont("Helvetica-Oblique", 10)
     c.setFillColor("gray")
     c.drawString(50, 50, "Disclaimer: This report provides a risk assessment and general recommendations.")
@@ -499,16 +488,17 @@ def generate_pdf_report(probability, recommendations, age, bmi, glucose, bp, ski
     buffer.seek(0)
     return buffer.getvalue()
 
-# --- AI Doctor Chat ---
+
+# ✅ MAIN FIX: Replaced st.chat_input() with st.text_input() + button
+# st.chat_input() is NOT allowed inside st.tabs(), st.columns(), st.expander(),
+# st.form(), or st.sidebar. Using text_input + button works everywhere.
 def ai_doctor_chat():
     st.header("🩺 AI Diabetes Specialist")
     st.caption("Get answers to your diabetes-related questions (not a substitute for medical advice)")
     
     if "ai_assistant" not in st.session_state:
-        # ✅ FIX 2: this line was not indented under the if block (was at 4 spaces, needs 8)
         st.session_state.ai_assistant = AIDoctorAssistant()
 
-    # ✅ FIX 3: these two lines had incorrect/inconsistent indentation
     assistant = st.session_state.ai_assistant
 
     if assistant.init_error:
@@ -517,7 +507,9 @@ def ai_doctor_chat():
     # Chat history display
     chat_html = "<div class='chat-container'>"
     for message in st.session_state.chat_history:
-        display_timestamp = datetime.datetime.strptime(message['timestamp'], "%Y%m%d%H%M%S%f").strftime("%H:%M")
+        display_timestamp = datetime.datetime.strptime(
+            message['timestamp'], "%Y%m%d%H%M%S%f"
+        ).strftime("%H:%M")
         
         if message['role'] == 'user':
             chat_html += f"""
@@ -534,27 +526,40 @@ def ai_doctor_chat():
             </div>
             """
     chat_html += "</div>"
-    
     st.markdown(chat_html, unsafe_allow_html=True)
     
-    # Chat input
-    user_query = st.chat_input("Ask your diabetes-related question...")
-    if user_query:
+    # ✅ FIX: Use text_input + button instead of st.chat_input()
+    # st.chat_input() raises StreamlitAPIException inside st.tabs()
+    col_input, col_btn = st.columns([5, 1])
+    with col_input:
+        user_query = st.text_input(
+            "Your question",
+            placeholder="Ask your diabetes-related question...",
+            label_visibility="collapsed",
+            key="chat_text_input"
+        )
+    with col_btn:
+        send_clicked = st.button("Send 💬", use_container_width=True)
+
+    if send_clicked and user_query and user_query.strip():
         granular_timestamp = datetime.datetime.now().strftime("%Y%m%d%H%M%S%f")
         
         st.session_state.chat_history.append({
             "role": "user",
-            "content": user_query,
+            "content": user_query.strip(),
             "timestamp": granular_timestamp
         })
         
         context = ""
         if st.session_state.health_history:
             latest = st.session_state.health_history[-1]
-            context = f"User's latest health stats: {latest['risk_level']} risk, BMI {latest['bmi']}, Glucose {latest['glucose']}, Age {latest['age']}"
+            context = (
+                f"User's latest health stats: {latest['risk_level']} risk, "
+                f"BMI {latest['bmi']}, Glucose {latest['glucose']}, Age {latest['age']}"
+            )
         
         with st.spinner("AI Doctor is thinking..."):
-            ai_response = assistant.generate_response(user_query, context)
+            ai_response = assistant.generate_response(user_query.strip(), context)
         
         st.session_state.chat_history.append({
             "role": "assistant",
@@ -562,6 +567,13 @@ def ai_doctor_chat():
             "timestamp": datetime.datetime.now().strftime("%Y%m%d%H%M%S%f")
         })
         st.rerun()
+
+    # Clear chat button
+    if st.session_state.chat_history:
+        if st.button("🗑️ Clear Chat History"):
+            st.session_state.chat_history = []
+            st.rerun()
+
 
 # --- Health Timeline ---
 def display_health_timeline():
@@ -600,10 +612,8 @@ def display_health_timeline():
     )
     st.plotly_chart(fig, use_container_width=True)
     
-    # Detailed history with unique keys
     with st.expander("📝 View Detailed History"):
         for idx, entry in enumerate(reversed(st.session_state.health_history)):
-            # Generate unique key using UUID
             unique_key = f"entry_{entry['date']}_{str(uuid.uuid4())[:8]}"
             
             with stylable_container(
@@ -628,11 +638,11 @@ def display_health_timeline():
                     st.markdown(f"**BMI**: {entry['bmi']:.1f} | **Glucose**: {entry['glucose']} mg/dL")
                     st.markdown(f"**Age**: {entry['age']}")
 
+
 # --- Medication Planner ---
 def medication_planner():
     st.header("💊 Medication & Reminder Planner")
     
-    # Add new medication
     with st.form("add_medication"):
         st.subheader("Add New Medication")
         cols = st.columns(2)
@@ -667,7 +677,6 @@ def medication_planner():
             else:
                 st.error("Please fill in all required fields")
     
-    # Current medications list with unique keys
     st.subheader("Your Medications")
     if not st.session_state.medications:
         st.info("No medications added yet.")
@@ -703,7 +712,6 @@ def medication_planner():
                         st.session_state.medications.pop(i)
                         st.rerun()
     
-    # Calendar view
     st.subheader("📅 Medication Schedule")
     if st.session_state.medications:
         events = []
@@ -739,12 +747,11 @@ def medication_planner():
             "aspectRatio": 2
         }
         
-        calendar_component = calendar(events=events, options=calendar_options, key="medication_calendar")
+        calendar(events=events, options=calendar_options, key="medication_calendar")
     else:
         st.info("Add medications to see your schedule")
 
 def get_time_for_period(period, end=False):
-    """Helper function for medication planner"""
     times = {
         "Morning": ("08:00:00", "09:00:00"),
         "Afternoon": ("12:00:00", "13:00:00"),
@@ -752,6 +759,7 @@ def get_time_for_period(period, end=False):
         "Night": ("21:00:00", "22:00:00")
     }
     return times[period][1] if end else times[period][0]
+
 
 # --- Main App Content ---
 def app_main_content():
@@ -764,7 +772,6 @@ def app_main_content():
 
     st.markdown("---")
 
-    # Sidebar Input
     with st.sidebar:
         st.title(f"👤 {st.session_state.username}")
         if st.button("Logout"):
@@ -923,9 +930,7 @@ def app_main_content():
 
         with tab2:
             try:
-                # Ensure 'enhanced_diabetes.csv' is available for this part to work.
-                # It should be in the same directory as the main script.
-                df = pd.read_csv(os.path.join(current_dir, "enhanced_diabetes.csv")) 
+                df = pd.read_csv(os.path.join(current_dir, "enhanced_diabetes.csv"))
                 fig = px.scatter(df, x="Glucose", y="BMI", color="Outcome",
                                  hover_data=["Age"],
                                  title="Glucose vs BMI Relationship",
@@ -933,7 +938,7 @@ def app_main_content():
                                  trendline="lowess")
                 st.plotly_chart(fig, use_container_width=True)
             except FileNotFoundError:
-                st.warning("Sample dataset 'enhanced_diabetes.csv' not found for visualization. Please ensure it's in the correct directory.")
+                st.warning("Sample dataset 'enhanced_diabetes.csv' not found for visualization.")
             except Exception as e:
                 st.error(f"An error occurred loading or plotting 'enhanced_diabetes.csv': {e}")
 
@@ -988,11 +993,13 @@ def app_main_content():
                 Chat with AI, track meds, view history
                 """)
 
-    # --- New Premium Features Section ---
+    # --- Premium Features Section ---
     st.markdown("---")
     st.header("✨ Premium Features")
     
-    feature_tabs = st.tabs(["AI Doctor Chat", "Health Timeline", "Medication Planner"])
+    # ✅ FIX: All three features remain in tabs. The chat now uses text_input+button
+    # which is fully compatible with st.tabs() unlike st.chat_input()
+    feature_tabs = st.tabs(["🩺 AI Doctor Chat", "📈 Health Timeline", "💊 Medication Planner"])
     
     with feature_tabs[0]:
         ai_doctor_chat()
@@ -1003,9 +1010,10 @@ def app_main_content():
     with feature_tabs[2]:
         medication_planner()
 
+
 # --- Main App Router ---
 def main():
-    initialize_user_db() # Ensure user database is ready
+    initialize_user_db()
 
     if st.session_state.username:
         app_main_content()
