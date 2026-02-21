@@ -26,14 +26,25 @@ auth_dir = os.path.join(current_dir, 'auth')
 if auth_dir not in sys.path:
     sys.path.append(auth_dir)
 
+# --- Page Config ---
+st.set_page_config(
+    page_title="GlucoCheck Pro+",
+    page_icon="🏥",
+    layout="wide",
+    initial_sidebar_state="expanded"
+)
+
+# Deferred startup notices (to avoid using Streamlit APIs before page config)
+startup_notices = []
+
 # --- Clean up any existing confusion_matrix.html ---
 confusion_matrix_path = os.path.join(current_dir, "confusion_matrix.html")
 if os.path.exists(confusion_matrix_path):
     try:
         os.remove(confusion_matrix_path)
-        st.success(f"Removed existing confusion_matrix.html file")
+        startup_notices.append(("success", "Removed existing confusion_matrix.html file"))
     except Exception as e:
-        st.warning(f"Could not remove confusion_matrix.html: {e}")
+        startup_notices.append(("warning", f"Could not remove confusion_matrix.html: {e}"))
 
 # --- Authentication Imports ---
 try:
@@ -42,24 +53,40 @@ try:
         generate_token, verify_token, update_password, delete_user
     )
 except ImportError:
-    st.error("Authentication utilities not found. Some features may be limited.")
+    startup_notices.append(("error", "Authentication utilities not found. Some features may be limited."))
     # Dummy functions to prevent crashes
-    def initialize_user_db(): pass
-    def hash_password(p): return p
-    def register_user(u, p): return False
-    def verify_user(u, p): return False
-    def generate_token(u): return "dummy_token"
-    def verify_token(t): return None
-    def update_password(u, p): return False
-    def delete_user(u): return False
+    def initialize_user_db():
+        pass
 
-# --- Page Config ---
-st.set_page_config(
-    page_title="GlucoCheck Pro+",
-    page_icon="🏥",
-    layout="wide",
-    initial_sidebar_state="expanded"
-)
+    def hash_password(p):
+        return p
+
+    def register_user(u, p):
+        return False
+
+    def verify_user(u, p):
+        return False
+
+    def generate_token(u):
+        return "dummy_token"
+
+    def verify_token(t):
+        return None
+
+    def update_password(u, p):
+        return False
+
+    def delete_user(u):
+        return False
+
+for level, message in startup_notices:
+    if level == "success":
+        st.success(message)
+    elif level == "warning":
+        st.warning(message)
+    else:
+        st.error(message)
+
 
 # --- Custom CSS ---
 def inject_css():
